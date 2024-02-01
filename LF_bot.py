@@ -1,33 +1,50 @@
+import tkinter as tk
 import pyautogui
-import random
 import time
+import random
 
-def main():
-    try:
-        # Przeniesienie kursora na x=655, y=891 i kliknięcie lewego przycisku myszy
-        pyautogui.moveTo(655, 891, duration=1)
+def start_bot(event=None):
+    # Przesuń kursor na pozycję (655, 891) i kliknij go
+    pyautogui.moveTo(655, 891, duration=1)
+    pyautogui.click()
+
+    # Poczekaj 2 sekundy
+    time.sleep(2)
+
+    while True:
+        # Klikaj myszką losowo przez czas od 0.03 do 0.07
+        czas_klikniecia = random.uniform(0.03, 0.07)
         pyautogui.click()
+        time.sleep(czas_klikniecia)
 
-        while True:
-            # Trzymanie przycisku spacji losowo przez czas od 0.1 do 0.94
-            czas_trzymania_spacji = random.uniform(0.1, 0.94)
-            pyautogui.keyDown('space')
-            time.sleep(czas_trzymania_spacji)
-            pyautogui.keyUp('space')
+        # Sprawdź kolor na pozycji x=655, y=891
+        kolor_piksela_koniec = pyautogui.pixel(655, 891)
+        if kolor_piksela_koniec == (229, 207, 183):
+            print("wykryto koniec")
+            break
 
-            # Sprawdzenie koloru na pozycji x=758, y=704
-            kolor_piksela_spacji = pyautogui.pixel(758, 704)
-            if kolor_piksela_spacji == (61, 99, 135):
-                break
+# Utwórz główne okno
+root = tk.Tk()
+root.title("Let's Fish Bot By Forek42")
+root.geometry("600x400")
+root.configure(bg="blue")
 
-            # Sprawdzenie koloru na pozycji x=575, y=674
-            kolor_piksela_bialy_lewa = pyautogui.pixel(575, 674)
-            biale_kolory = [(74, 182, 48), (48, 91, 45), (82, 191, 42, 255), (60, 179, 47, 255)]
-            if kolor_piksela_bialy_lewa in biale_kolory:
-                print("wykryto_bialy_lewa")
+# Dodaj napis na górze
+label_title = tk.Label(root, text="Let's Fish Bot By Forek42", font=("Helvetica", 16), bg="blue", fg="white")
+label_title.pack(pady=10)
 
-    except KeyboardInterrupt:
-        print("\nProgram zakończony.")
+# Dodaj przycisk Start i przypisz klawisz F8
+button_start = tk.Button(root, text="Start (F8)", command=start_bot)
+button_start.pack(pady=10)
+root.bind("<F8>", start_bot)  # Przypisanie klawisza F8 do przycisku Start
 
-if __name__ == "__main__":
-    main()
+# Dodaj przycisk Stop i przypisz klawisz F9
+button_stop = tk.Button(root, text="Stop (F9)")
+button_stop.pack(pady=10)
+
+# Dodaj napis "SPINNING ONLY"
+label_spinning_only = tk.Label(root, text="(SPINNING ONLY)", font=("Helvetica", 12), bg="blue", fg="white")
+label_spinning_only.pack(pady=5)
+
+# Uruchom główną pętlę
+root.mainloop()
