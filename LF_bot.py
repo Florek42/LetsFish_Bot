@@ -1,54 +1,49 @@
-import tkinter as tk
-import pyautogui
+from pynput import keyboard, mouse
 import time
 import random
 
-def start_bot(event=None):
-    # Przesuń kursor na pozycję (655, 891) i kliknij go
-    pyautogui.moveTo(655, 891, duration=1)
-    pyautogui.click()
+running = False  # Zmienna śledząca, czy program jest uruchomiony
 
-    # Poczekaj 2 sekundy
-    time.sleep(5)
+def on_press(key):
+    global running
 
-    while True:
-        # Klikaj myszką losowo przez czas od 0.03 do 0.07
-        czas_klikniecia = random.uniform(0.03, 0.07)
-        pyautogui.click()
-        time.sleep(czas_klikniecia)
+    if key == keyboard.Key.f8:
+        if not running:
+            print("Start")
+            running = True
+            fish()
 
-        # Sprawdź kolor na pozycji x=655, y=891
-        kolor_piksela_koniec = pyautogui.pixel(655, 891)
-        if kolor_piksela_koniec == (229, 207, 183):
-            print("wykryto koniec")
+        else:
+            print("Stop")
+            running = False
+
+def on_release(key):
+    pass
+
+def fish():
+    global running
+
+    while running:
+        # Przesuń kursor na pozycję (655, 891)
+        mouse_controller = mouse.Controller()
+        mouse_controller.position = (655, 891)
+
+        # Szybko klikaj myszką losowo przez czas od 0.02 do 0.04
+        czas_klikniecia = random.uniform(0.02, 0.04)
+        mouse_controller.click(mouse.Button.left, 2)  # 2 oznacza dwukrotne kliknięcie lewym przyciskiem myszy
+
+        # Sprawdź kolor na pozycji x=758, y=704
+        kolor_piksela_ryba = mouse_controller.position
+        if kolor_piksela_ryba == (758, 704) and pyautogui.pixel(758, 704) == (61, 99, 135):
+            print("Ryba złowiona")
             break
 
-# Utwórz główne okno
-root = tk.Tk()
-root.title("Let's Fish Bot By Forek42")
-root.geometry("600x400")
-root.configure(bg="blue")
+        time.sleep(0.1)  # Czas przerwy między kolejnymi iteracjami
 
-# Dodaj napis na górze
-label_title = tk.Label(root, text="Let's Fish Bot By Forek42", font=("Helvetica", 16), bg="blue", fg="white")
-label_title.pack(pady=10)
+# Utwórz obiekt nasłuchujący klawiaturę
+listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+listener.start()
 
-# Dodaj przycisk Start i przypisz klawisz F8
-button_start = tk.Button(root, text="Start (F8)", command=start_bot)
-button_start.pack(pady=10)
-root.bind("<F8>", start_bot)  # Przypisanie klawisza F8 do przycisku Start
-
-# Dodaj przycisk Stop i przypisz klawisz F9
-button_stop = tk.Button(root, text="Stop (F9)")
-button_stop.pack(pady=10)
-
-# Dodaj napis "SPINNING ONLY"
-label_spinning_only = tk.Label(root, text="(SPINNING ONLY)", font=("Helvetica", 12), bg="blue", fg="white")
-label_spinning_only.pack(pady=5)
-
-# Uruchom główną pętlę
-root.mainloop()
-
-
-
-#NAPRAWIC BO SIE COS PSUJE NA POCZATKU
+# Trzymaj program uruchomiony
+while True:
+    pass
