@@ -9,7 +9,7 @@ def start_bot(event=None):
     pyautogui.click()
 
     # Poczekaj 2 sekundy
-    time.sleep(2)
+    time.sleep(5)
 
     while True:
         # Klikaj myszką losowo przez czas od 0.03 do 0.07
@@ -48,3 +48,7 @@ label_spinning_only.pack(pady=5)
 
 # Uruchom główną pętlę
 root.mainloop()
+
+
+
+#NAPRAWIC BO SIE COS PSUJE NA POCZATKU
