@@ -1,49 +1,45 @@
-from pynput import keyboard, mouse
+from pynput.mouse import Controller, Button
+from pynput.keyboard import Controller as KeyController, Key
 import time
 import random
 
-running = False  # Zmienna śledząca, czy program jest uruchomiony
+def main():
+    # Przeniesienie kursora na pozycję (655, 891) i kliknięcie lewego przycisku myszy
+    mouse = Controller()
+    mouse.position = (655, 891)
+    mouse.click(Button.left, 1)
 
-def on_press(key):
-    global running
+    # Poczekaj 3 sekundy
+    time.sleep(3)
 
-    if key == keyboard.Key.f8:
-        if not running:
-            print("Start")
-            running = True
-            fish()
+    # Klikaj spację w losowych odstępach czasowych od 0.15 do 0.25, dopóki nie pojawi się kolor (70, 49, 34) na ekranie w miejscu (927, 534)
+    while not check_pixel_color(927, 534, (70, 49, 34)):
+        czas_klikniecia = random.uniform(0.15, 0.25)
+        press_and_release_key(Key.space)
+        time.sleep(czas_klikniecia)
 
-        else:
-            print("Stop")
-            running = False
+    # Przestań klikanie spacji
+    release_key(Key.space)
 
-def on_release(key):
-    pass
+    # Przenieś kursor na pozycję (927, 534) i kliknij lewym przyciskiem myszy raz
+    mouse.position = (927, 534)
+    mouse.click(Button.left, 1)
 
-def fish():
-    global running
+    print("Zakończyłem zadanie")
 
-    while running:
-        # Przesuń kursor na pozycję (655, 891)
-        mouse_controller = mouse.Controller()
-        mouse_controller.position = (655, 891)
+def press_and_release_key(key):
+    keyboard = KeyController()
+    keyboard.press(key)
+    keyboard.release(key)
 
-        # Szybko klikaj myszką losowo przez czas od 0.02 do 0.04
-        czas_klikniecia = random.uniform(0.02, 0.04)
-        mouse_controller.click(mouse.Button.left, 2)  # 2 oznacza dwukrotne kliknięcie lewym przyciskiem myszy
+def release_key(key):
+    keyboard = KeyController()
+    keyboard.release(key)
 
-        # Sprawdź kolor na pozycji x=758, y=704
-        kolor_piksela_ryba = mouse_controller.position
-        if kolor_piksela_ryba == (758, 704) and pyautogui.pixel(758, 704) == (61, 99, 135):
-            print("Ryba złowiona")
-            break
+def check_pixel_color(x, y, expected_color):
+    mouse = Controller()
+    actual_color = mouse.position = (x, y)
+    return actual_color == expected_color
 
-        time.sleep(0.1)  # Czas przerwy między kolejnymi iteracjami
-
-# Utwórz obiekt nasłuchujący klawiaturę
-listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-listener.start()
-
-# Trzymaj program uruchomiony
-while True:
-    pass
+if __name__ == "__main__":
+    main()
