@@ -1,5 +1,6 @@
 import pyautogui
 import time
+import threading
 from pynput.keyboard import Controller as KeyController, Key
 
 def zarzuc_wedke():
@@ -9,18 +10,34 @@ def zarzuc_wedke():
     pyautogui.click()
     print("Zarzucam wedkę")
 
-def sprawdz_kolor(x, y, kolor):
-    return pyautogui.pixelMatchesColor(x, y, kolor)
+def sprawdz_kolor(x, y, kolor, komunikat):
+    pixel_color = pyautogui.pixel(x, y)
+    if pixel_color == kolor:
+        print(komunikat)
+        return True
+    return False
 
 def klikaj_spacje():
     keyboard = KeyController()
     while True:
-        if sprawdz_kolor(655, 652, (54, 175, 49)) or sprawdz_kolor(851, 901, (194, 146, 91)):
+        if sprawdz_kolor(655, 652, (54, 175, 49), "Zarzucam wedkę") or sprawdz_kolor(851, 901, (202, 159, 111), "Złowiłem"):
             break
-        keyboard.press(Key.space)
-        keyboard.release(Key.space)
-        time.sleep(0.1)  # Dodajemy opóźnienie 0.1 sekundy
+        with keyboard.pressed(Key.space):
+            time.sleep(0.04)  
+
+def klikaj_esc_co_23_sekund():
+    keyboard = KeyController()
+    while True:
+        keyboard.press(Key.esc)
+        keyboard.release(Key.esc)
+        time.sleep(23)
 
 if __name__ == "__main__":
+    
+    esc_thread = threading.Thread(target=klikaj_esc_co_23_sekund)
+    esc_thread.daemon = True
+    esc_thread.start()
+
+    
     zarzuc_wedke()
     klikaj_spacje()
