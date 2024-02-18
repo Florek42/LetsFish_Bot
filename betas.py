@@ -1,7 +1,7 @@
 import pyautogui
 import time
 import threading
-from pynput.keyboard import Controller as KeyController, Key
+from pynput.keyboard import Controller as KeyController, Key, Listener
 
 def zarzuc_wedke():
     x = 651
@@ -33,11 +33,10 @@ def klikaj_esc_co_23_sekund():
         time.sleep(23)
 
 if __name__ == "__main__":
-    
     esc_thread = threading.Thread(target=klikaj_esc_co_23_sekund)
     esc_thread.daemon = True
     esc_thread.start()
 
-    
     zarzuc_wedke()
-    klikaj_spacje()
+    while True:
+        klikaj_spacje()
