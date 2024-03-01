@@ -25,7 +25,7 @@ def klikaj_spacje():
         with keyboard.pressed(Key.space):
             time.sleep(0.04)  
 
-def klikaj_esc_co_23_sekund():
+def klikacz():
     keyboard = KeyController()
     while True:
         keyboard.press(Key.esc)
@@ -33,7 +33,7 @@ def klikaj_esc_co_23_sekund():
         time.sleep(23)
 
 if __name__ == "__main__":
-    esc_thread = threading.Thread(target=klikaj_esc_co_23_sekund)
+    esc_thread = threading.Thread(target=klikacz)
     esc_thread.daemon = True
     esc_thread.start()
 
